@@ -8,6 +8,9 @@ import { Switch } from "@/components/ui/switch";
 import type { ExitConfig, StopLossType, TakeProfitType } from "@/lib/strategy-types";
 import { Plus, Trash2 } from "lucide-react";
 
+type StopLossUnit = ExitConfig["stopLoss"]["unit"];
+type TakeProfitUnit = ExitConfig["takeProfit"]["unit"];
+
 export function StepExitRules() {
   const { exitConfig, setExitConfig, setStep } = useStrategyBuilder();
   const { stopLoss, takeProfit, trailingStop, breakEven } = exitConfig;
@@ -31,7 +34,7 @@ export function StepExitRules() {
           <div className="grid gap-3 sm:grid-cols-3">
             <div className="space-y-1">
               <Label className="text-xs">Type</Label>
-              <Select value={stopLoss.type} onValueChange={(v) => patchSL({ type: v as StopLossType })}>
+              <Select value={stopLoss.type} onValueChange={(value: StopLossType) => patchSL({ type: value })}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="fixed">Fixed</SelectItem>
@@ -47,7 +50,7 @@ export function StepExitRules() {
             </div>
             <div className="space-y-1">
               <Label className="text-xs">Unit</Label>
-              <Select value={stopLoss.unit} onValueChange={(v) => patchSL({ unit: v as any })}>
+              <Select value={stopLoss.unit} onValueChange={(value: StopLossUnit) => patchSL({ unit: value })}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="pips">Pips</SelectItem>
@@ -65,7 +68,7 @@ export function StepExitRules() {
           <div className="grid gap-3 sm:grid-cols-3">
             <div className="space-y-1">
               <Label className="text-xs">Type</Label>
-              <Select value={takeProfit.type} onValueChange={(v) => patchTP({ type: v as TakeProfitType })}>
+              <Select value={takeProfit.type} onValueChange={(value: TakeProfitType) => patchTP({ type: value })}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="fixed">Fixed</SelectItem>
@@ -83,7 +86,7 @@ export function StepExitRules() {
                 </div>
                 <div className="space-y-1">
                   <Label className="text-xs">Unit</Label>
-                  <Select value={takeProfit.unit} onValueChange={(v) => patchTP({ unit: v as any })}>
+                  <Select value={takeProfit.unit} onValueChange={(value: TakeProfitUnit) => patchTP({ unit: value })}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="pips">Pips</SelectItem>
