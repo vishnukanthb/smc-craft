@@ -142,6 +142,49 @@ export type Database = {
         }
         Relationships: []
       }
+      user_settings: {
+        Row: {
+          api_key: string | null
+          api_secret: string | null
+          created_at: string
+          default_max_drawdown: number
+          default_risk_per_trade: number
+          id: string
+          notifications: Json
+          theme: string
+          updated_at: string
+          user_id: string
+          webhook_url: string | null
+        }
+        Insert: {
+          api_key?: string | null
+          api_secret?: string | null
+          created_at?: string
+          default_max_drawdown?: number
+          default_risk_per_trade?: number
+          id?: string
+          notifications?: Json
+          theme?: string
+          updated_at?: string
+          user_id: string
+          webhook_url?: string | null
+        }
+        Update: {
+          api_key?: string | null
+          api_secret?: string | null
+          created_at?: string
+          default_max_drawdown?: number
+          default_risk_per_trade?: number
+          id?: string
+          notifications?: Json
+          theme?: string
+          updated_at?: string
+          user_id?: string
+          webhook_url?: string | null
+        }
+        Relationships: []
+      }
+
       user_roles: {
         Row: {
           id: string
