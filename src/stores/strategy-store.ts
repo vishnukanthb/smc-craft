@@ -12,6 +12,7 @@ interface StrategyBuilderState {
   conditions: ConditionWithId[];
   exitConfig: ExitConfig;
   riskConfig: RiskConfig;
+  isActive: boolean;
   editingId: string | null;
 
   setStep: (step: number) => void;
@@ -26,6 +27,7 @@ interface StrategyBuilderState {
   updateCondition: (id: string, condition: ConditionWithId) => void;
   setExitConfig: (config: ExitConfig) => void;
   setRiskConfig: (config: RiskConfig) => void;
+  setIsActive: (isActive: boolean) => void;
   setEditingId: (id: string | null) => void;
   reset: () => void;
   loadStrategy: (strategy: Strategy) => void;
@@ -42,6 +44,7 @@ export const useStrategyBuilder = create<StrategyBuilderState>((set, get) => ({
   conditions: [],
   exitConfig: { ...DEFAULT_EXIT_CONFIG },
   riskConfig: { ...DEFAULT_RISK_CONFIG },
+  isActive: false,
   editingId: null,
 
   setStep: (step) => set({ step }),
@@ -56,6 +59,7 @@ export const useStrategyBuilder = create<StrategyBuilderState>((set, get) => ({
   updateCondition: (id, condition) => set((s) => ({ conditions: s.conditions.map((c) => (c.id === id ? condition : c)) })),
   setExitConfig: (exitConfig) => set({ exitConfig }),
   setRiskConfig: (riskConfig) => set({ riskConfig }),
+  setIsActive: (isActive) => set({ isActive }),
   setEditingId: (editingId) => set({ editingId }),
   reset: () =>
     set({
@@ -68,6 +72,7 @@ export const useStrategyBuilder = create<StrategyBuilderState>((set, get) => ({
       conditions: [],
       exitConfig: { ...DEFAULT_EXIT_CONFIG },
       riskConfig: { ...DEFAULT_RISK_CONFIG },
+      isActive: false,
       editingId: null,
     }),
   loadStrategy: (strategy) =>
@@ -79,8 +84,9 @@ export const useStrategyBuilder = create<StrategyBuilderState>((set, get) => ({
       tradingPair: strategy.tradingPair,
       timeframes: strategy.timeframes,
       conditions: strategy.conditions,
-      exitConfig: strategy.exitConfig,
-      riskConfig: strategy.riskConfig,
+      exitConfig: { ...DEFAULT_EXIT_CONFIG, ...strategy.exitConfig },
+      riskConfig: { ...DEFAULT_RISK_CONFIG, ...strategy.riskConfig },
+      isActive: strategy.isActive ?? false,
       editingId: strategy.id || null,
     }),
   toStrategy: () => {
@@ -94,7 +100,7 @@ export const useStrategyBuilder = create<StrategyBuilderState>((set, get) => ({
       conditions: s.conditions,
       exitConfig: s.exitConfig,
       riskConfig: s.riskConfig,
-      isActive: false,
+      isActive: s.isActive,
     };
   },
 }));

@@ -65,10 +65,10 @@ export default function MyStrategies() {
                       </div>
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
-                      <Switch checked={s.isActive} onCheckedChange={() => toggleActive(s.id!)} />
+                      <Switch checked={s.isActive} onCheckedChange={() => void toggleActive(s.id!)} />
                       <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleEdit(s.id!)}><Edit className="h-3.5 w-3.5" /></Button>
-                      <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => duplicateStrategy(s.id!)}><Copy className="h-3.5 w-3.5" /></Button>
-                      <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={() => deleteStrategy(s.id!)}><Trash2 className="h-3.5 w-3.5" /></Button>
+                      <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => void duplicateStrategy(s.id!)}><Copy className="h-3.5 w-3.5" /></Button>
+                      <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={() => void deleteStrategy(s.id!)}><Trash2 className="h-3.5 w-3.5" /></Button>
                     </div>
                   </div>
                 </CardContent>
