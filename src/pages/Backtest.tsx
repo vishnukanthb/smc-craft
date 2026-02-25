@@ -4,17 +4,25 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { toast } from "@/hooks/use-toast";
 import { useBacktests } from "@/hooks/use-backtests";
+import { useStrategies } from "@/hooks/use-strategies";
 
 export default function Backtest() {
-  const { backtests, loading } = useBacktests();
-  const [strategyId, setStrategyId] = useState("");
+  const { backtests, loading: backtestsLoading } = useBacktests();
+  const { strategies, loading: strategiesLoading } = useStrategies();
+  const [strategyId, setStrategyId] = useState<string>("");
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
 
+  const strategyOptions = useMemo(() => strategies.map((s) => ({ id: s.id!, name: s.name })), [strategies]);
+
   const handleRun = () => {
+    if (!strategyId) {
+      toast({ title: "Select a strategy first", variant: "destructive" });
+      return;
+    }
     toast({ title: "Backtest queued", description: "This is a placeholder—execution engine coming soon." });
   };
 
@@ -25,7 +33,7 @@ export default function Backtest() {
           <h1 className="text-2xl font-bold">Backtest</h1>
           <p className="text-muted-foreground text-sm">Test your strategies against historical data (beta preview)</p>
         </div>
-        <Button onClick={handleRun}>Run Backtest</Button>
+        <Button onClick={handleRun} disabled={!strategyId}>Run Backtest</Button>
       </div>
 
       <Card>
@@ -35,14 +43,22 @@ export default function Backtest() {
         <CardContent className="grid gap-4 md:grid-cols-3">
           <div className="space-y-2">
             <Label className="text-xs">Strategy</Label>
-            <Select value={strategyId} onValueChange={setStrategyId}>
-              <SelectTrigger><SelectValue placeholder="Select strategy" /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="placeholder" disabled>
-                  Link to strategies soon
-                </SelectItem>
-              </SelectContent>
-            </Select>
+            {strategiesLoading ? (
+              <Skeleton className="h-10 w-full" />
+            ) : (
+              <Select value={strategyId} onValueChange={setStrategyId}>
+                <SelectTrigger><SelectValue placeholder="Select strategy" /></SelectTrigger>
+                <SelectContent>
+                  {strategyOptions.length === 0 ? (
+                    <SelectItem value="" disabled>No strategies yet</SelectItem>
+                  ) : (
+                    strategyOptions.map((option) => (
+                      <SelectItem key={option.id} value={option.id}>{option.name}</SelectItem>
+                    ))
+                  )}
+                </SelectContent>
+              </Select>
+            )}
           </div>
           <div className="space-y-2">
             <Label className="text-xs">From</Label>
@@ -60,7 +76,7 @@ export default function Backtest() {
           <CardTitle className="text-lg">Recent Backtests</CardTitle>
         </CardHeader>
         <CardContent>
-          {loading ? (
+          {backtestsLoading ? (
             <div className="space-y-3">
               {Array.from({ length: 3 }).map((_, idx) => (
                 <Skeleton key={idx} className="h-16 w-full" />
