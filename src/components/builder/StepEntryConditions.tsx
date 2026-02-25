@@ -7,7 +7,7 @@ import { ConditionCard } from "@/components/builder/ConditionCard";
 import { EntryLogicSummary } from "@/components/builder/EntryLogicSummary";
 import { CONDITION_LABELS, type EntryCondition } from "@/lib/strategy-types";
 import { Plus } from "lucide-react";
-import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
+import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, type DragEndEvent } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy, arrayMove } from "@dnd-kit/sortable";
 
 const CONDITION_TYPES = Object.keys(CONDITION_LABELS) as EntryCondition["type"][];
@@ -38,7 +38,7 @@ export function StepEntryConditions() {
     addCondition({ id: crypto.randomUUID(), condition: createDefault(selectedType), logicOperator: "AND" });
   };
 
-  const handleDragEnd = (event: any) => {
+  const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
     const oldIdx = conditions.findIndex((c) => c.id === active.id);
