@@ -26,8 +26,9 @@ export default function AuthPage() {
         if (error) throw error;
         toast({ title: "Check your email", description: "We sent you a confirmation link." });
       }
-    } catch (error: any) {
-      toast({ title: "Error", description: error.message, variant: "destructive" });
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Unexpected error";
+      toast({ title: "Error", description: message, variant: "destructive" });
     } finally {
       setLoading(false);
     }
