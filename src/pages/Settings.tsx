@@ -4,12 +4,12 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Moon, Sun } from "lucide-react";
 import { useSettings } from "@/hooks/use-settings";
 
 export default function SettingsPage() {
-  const { settings, saveSettings, isSaving } = useSettings();
+  const { settings, saveSettings, isSaving, loading } = useSettings();
   const [darkMode, setDarkMode] = useState(settings.theme === "dark");
   const [apiKey, setApiKey] = useState(settings.api_key ?? "");
   const [apiSecret, setApiSecret] = useState(settings.api_secret ?? "");
@@ -20,6 +20,8 @@ export default function SettingsPage() {
   const [riskWarnings, setRiskWarnings] = useState(notifications.riskWarnings ?? true);
   const [dailySummary, setDailySummary] = useState(notifications.dailySummary ?? false);
 
+  const themeHydrated = useRef(false);
+
   useEffect(() => {
     if (darkMode) {
       document.documentElement.classList.add("dark");
@@ -28,8 +30,23 @@ export default function SettingsPage() {
       document.documentElement.classList.remove("dark");
       localStorage.setItem("theme", "light");
     }
-    saveSettings({ theme: darkMode ? "dark" : "light" });
+    if (themeHydrated.current) {
+      saveSettings({ theme: darkMode ? "dark" : "light" });
+    } else {
+      themeHydrated.current = true;
+    }
   }, [darkMode, saveSettings]);
+
+  useEffect(() => {
+    setDarkMode(settings.theme === "dark");
+    setApiKey(settings.api_key ?? "");
+    setApiSecret(settings.api_secret ?? "");
+    setRiskPerTrade(settings.default_risk_per_trade);
+    setMaxDrawdown(settings.default_max_drawdown);
+    setTradeEntry((settings.notifications as Record<string, boolean>)?.tradeEntry ?? true);
+    setRiskWarnings((settings.notifications as Record<string, boolean>)?.riskWarnings ?? true);
+    setDailySummary((settings.notifications as Record<string, boolean>)?.dailySummary ?? false);
+  }, [settings]);
 
   const handleSaveConnection = () => {
     saveSettings({ api_key: apiKey, api_secret: apiSecret });
