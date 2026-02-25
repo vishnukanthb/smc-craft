@@ -136,7 +136,9 @@ export interface ExitConfig {
 }
 
 export interface RiskConfig {
+  accountBalance: number;
   riskPerTrade: number;
+  stopLossPips: number;
   maxConcurrentTrades: number;
   maxDailyLoss: number;
   maxDrawdown: number;
@@ -165,7 +167,9 @@ export const DEFAULT_EXIT_CONFIG: ExitConfig = {
 };
 
 export const DEFAULT_RISK_CONFIG: RiskConfig = {
+  accountBalance: 10000,
   riskPerTrade: 1,
+  stopLossPips: 20,
   maxConcurrentTrades: 3,
   maxDailyLoss: 5,
   maxDrawdown: 10,
@@ -204,7 +208,7 @@ export const STRATEGY_TEMPLATES: Omit<Strategy, "id" | "createdAt" | "updatedAt"
       { id: "3", logicOperator: "AND", condition: { type: "fair_value_gap", fvgType: "bullish", minGapSize: 10, gapSizeUnit: "pips", requireFill: "partial" } },
     ],
     exitConfig: { stopLoss: { type: "below_ob", value: 5, unit: "pips" }, takeProfit: { type: "rr_ratio", value: 3, unit: "ratio", partials: [] }, trailingStop: { enabled: false, activationPips: 30, trailPips: 10 }, breakEven: { enabled: true, triggerPips: 15 } },
-    riskConfig: { riskPerTrade: 1, maxConcurrentTrades: 2, maxDailyLoss: 3, maxDrawdown: 8 },
+    riskConfig: { accountBalance: 25000, riskPerTrade: 1, stopLossPips: 8, maxConcurrentTrades: 2, maxDailyLoss: 3, maxDrawdown: 8 },
     isActive: false,
   },
   {
@@ -219,7 +223,7 @@ export const STRATEGY_TEMPLATES: Omit<Strategy, "id" | "createdAt" | "updatedAt"
       { id: "3", logicOperator: "AND", condition: { type: "supply_demand_zone", zoneType: "demand", freshness: "fresh", timeframe: "15m" } },
     ],
     exitConfig: { stopLoss: { type: "swing", value: 3, unit: "pips" }, takeProfit: { type: "opposite_liquidity", value: 0, unit: "pips", partials: [] }, trailingStop: { enabled: true, activationPips: 50, trailPips: 20 }, breakEven: { enabled: true, triggerPips: 25 } },
-    riskConfig: { riskPerTrade: 0.5, maxConcurrentTrades: 2, maxDailyLoss: 2, maxDrawdown: 6 },
+    riskConfig: { accountBalance: 10000, riskPerTrade: 0.5, stopLossPips: 40, maxConcurrentTrades: 2, maxDailyLoss: 2, maxDrawdown: 6 },
     isActive: false,
   },
   {
@@ -234,7 +238,7 @@ export const STRATEGY_TEMPLATES: Omit<Strategy, "id" | "createdAt" | "updatedAt"
       { id: "3", logicOperator: "AND", condition: { type: "indicator_confluence", rsiEnabled: true, rsiThreshold: 30, rsiCondition: "oversold", volumeAboveAverage: true, emaEnabled: false, emaPeriod: 21, emaCondition: "above" } },
     ],
     exitConfig: { stopLoss: { type: "fixed", value: 15, unit: "pips" }, takeProfit: { type: "rr_ratio", value: 3, unit: "ratio", partials: [] }, trailingStop: { enabled: false, activationPips: 30, trailPips: 10 }, breakEven: { enabled: true, triggerPips: 10 } },
-    riskConfig: { riskPerTrade: 1, maxConcurrentTrades: 3, maxDailyLoss: 4, maxDrawdown: 10 },
+    riskConfig: { accountBalance: 15000, riskPerTrade: 1, stopLossPips: 15, maxConcurrentTrades: 3, maxDailyLoss: 4, maxDrawdown: 10 },
     isActive: false,
   },
   {
@@ -250,7 +254,7 @@ export const STRATEGY_TEMPLATES: Omit<Strategy, "id" | "createdAt" | "updatedAt"
       { id: "4", logicOperator: "AND", condition: { type: "fair_value_gap", fvgType: "bullish", minGapSize: 5, gapSizeUnit: "pips", requireFill: "none" } },
     ],
     exitConfig: { stopLoss: { type: "below_ob", value: 3, unit: "pips" }, takeProfit: { type: "partial", value: 0, unit: "ratio", partials: [{ percentage: 50, rrRatio: 1 }, { percentage: 50, rrRatio: 2 }] }, trailingStop: { enabled: true, activationPips: 20, trailPips: 8 }, breakEven: { enabled: false, triggerPips: 15 } },
-    riskConfig: { riskPerTrade: 1.5, maxConcurrentTrades: 2, maxDailyLoss: 4, maxDrawdown: 8 },
+    riskConfig: { accountBalance: 20000, riskPerTrade: 1.5, stopLossPips: 10, maxConcurrentTrades: 2, maxDailyLoss: 4, maxDrawdown: 8 },
     isActive: false,
   },
   {
@@ -265,7 +269,7 @@ export const STRATEGY_TEMPLATES: Omit<Strategy, "id" | "createdAt" | "updatedAt"
       { id: "3", logicOperator: "AND", condition: { type: "supply_demand_zone", zoneType: "supply", freshness: "fresh", timeframe: "4H" } },
     ],
     exitConfig: { stopLoss: { type: "atr", value: 1.5, unit: "multiplier" }, takeProfit: { type: "rr_ratio", value: 2.5, unit: "ratio", partials: [] }, trailingStop: { enabled: true, activationPips: 40, trailPips: 15 }, breakEven: { enabled: true, triggerPips: 20 } },
-    riskConfig: { riskPerTrade: 1, maxConcurrentTrades: 2, maxDailyLoss: 3, maxDrawdown: 7 },
+    riskConfig: { accountBalance: 12000, riskPerTrade: 1, stopLossPips: 25, maxConcurrentTrades: 2, maxDailyLoss: 3, maxDrawdown: 7 },
     isActive: false,
   },
 ];

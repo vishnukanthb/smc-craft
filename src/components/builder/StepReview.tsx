@@ -4,19 +4,25 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { EntryLogicSummary } from "@/components/builder/EntryLogicSummary";
-import { CONDITION_LABELS } from "@/lib/strategy-types";
 import { useNavigate } from "react-router-dom";
 import { Download, Save } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+
+const currency = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
 
 export function StepReview() {
   const store = useStrategyBuilder();
-  const { saveStrategy } = useStrategies();
+  const { saveStrategy, isSaving } = useStrategies();
   const navigate = useNavigate();
 
-  const handleSave = () => {
-    saveStrategy(store.toStrategy(), store.editingId);
-    store.reset();
-    navigate("/strategies");
+  const handleSave = async () => {
+    try {
+      await saveStrategy(store.toStrategy(), store.editingId);
+      store.reset();
+      navigate("/strategies");
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleExport = () => {
@@ -66,19 +72,33 @@ export function StepReview() {
           </Card>
           <Card className="border-border">
             <CardContent className="p-3 space-y-1">
-              <p className="text-xs font-medium text-muted-foreground">Risk Per Trade</p>
-              <p className="text-sm">{store.riskConfig.riskPerTrade}%</p>
+              <p className="text-xs font-medium text-muted-foreground">Account Balance</p>
+              <p className="text-sm">{currency.format(store.riskConfig.accountBalance)}</p>
+              <p className="text-xs font-medium text-muted-foreground mt-2">Risk Per Trade</p>
+              <p className="text-sm">{store.riskConfig.riskPerTrade}% ({currency.format((store.riskConfig.accountBalance * store.riskConfig.riskPerTrade) / 100)})</p>
+              <p className="text-xs font-medium text-muted-foreground mt-2">Max Daily Loss</p>
+              <p className="text-sm">{store.riskConfig.maxDailyLoss}% ({currency.format((store.riskConfig.accountBalance * store.riskConfig.maxDailyLoss) / 100)})</p>
               <p className="text-xs font-medium text-muted-foreground mt-2">Max Drawdown</p>
               <p className="text-sm">{store.riskConfig.maxDrawdown}%</p>
             </CardContent>
           </Card>
         </div>
 
+        <div className="flex items-center justify-between rounded-lg border border-border px-4 py-3">
+          <div>
+            <p className="text-sm font-medium">Activate strategy after saving</p>
+            <p className="text-xs text-muted-foreground">Toggle to mark this strategy as live immediately</p>
+          </div>
+          <Switch checked={store.isActive} onCheckedChange={store.setIsActive} />
+        </div>
+
         <div className="flex flex-wrap gap-2 justify-between">
           <Button variant="outline" onClick={() => store.setStep(3)}>Back</Button>
           <div className="flex gap-2">
             <Button variant="outline" onClick={handleExport}><Download className="h-4 w-4 mr-1" /> Export JSON</Button>
-            <Button onClick={handleSave} disabled={!store.name}><Save className="h-4 w-4 mr-1" /> {store.editingId ? "Update" : "Save"} Strategy</Button>
+            <Button onClick={handleSave} disabled={!store.name || isSaving}>
+              <Save className="h-4 w-4 mr-1" /> {store.editingId ? "Update" : "Save"} Strategy
+            </Button>
           </div>
         </div>
       </CardContent>

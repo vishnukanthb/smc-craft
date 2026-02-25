@@ -1,3 +1,4 @@
+import type { Strategy } from "@/lib/strategy-types";
 import { STRATEGY_TEMPLATES, CONDITION_LABELS } from "@/lib/strategy-types";
 import { useStrategyBuilder } from "@/stores/strategy-store";
 import { useStrategies } from "@/hooks/use-strategies";
@@ -7,22 +8,25 @@ import { Badge } from "@/components/ui/badge";
 import { Copy, Wrench } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { toast } from "@/hooks/use-toast";
 
 export default function Templates() {
   const builder = useStrategyBuilder();
   const { saveStrategy } = useStrategies();
   const navigate = useNavigate();
 
-  const handleClone = (idx: number) => {
+  const handleClone = async (idx: number) => {
     const tpl = STRATEGY_TEMPLATES[idx];
-    saveStrategy(tpl);
-    toast({ title: "Template cloned to My Strategies" });
+    try {
+      await saveStrategy(tpl);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleCustomize = (idx: number) => {
     const tpl = STRATEGY_TEMPLATES[idx];
-    builder.loadStrategy({ ...tpl, id: undefined, createdAt: undefined, updatedAt: undefined } as any);
+    const strategy: Strategy = { ...tpl, id: undefined, createdAt: undefined, updatedAt: undefined };
+    builder.loadStrategy(strategy);
     navigate("/builder");
   };
 
